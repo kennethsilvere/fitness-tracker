@@ -1,3 +1,22 @@
-<p>
-  new-training works!
-</p>
+<div fxLayout fxLayoutAlign="center" fxLayoutGap="20px" class="new-training">
+  <mat-card fxFlex="400px" fxFlex.xs="100%">
+    <mat-card-title fxLayoutAlign="center">
+      Start new workout!
+    </mat-card-title>
+
+    <mat-card-content fxLayoutAlign="center">
+      <mat-form-field>
+        <mat-label>Choose exercise</mat-label>
+        <mat-select>
+          <mat-option value="crunches">Crunches</mat-option>
+          <mat-option value="touch-toes">Touch Toes</mat-option>
+          <mat-option value="burpees">Burpees</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions fxLayoutAlign="center">
+      <button mat-raised-button color="primary" (click)="onStartTraining()">Start</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

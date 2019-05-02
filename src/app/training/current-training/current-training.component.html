@@ -1,3 +1,14 @@
-<p>
-  current-training works!
-</p>
+<section class="current-training" fxLayout="column" fxLayoutAlign="center center">
+  <mat-progress-spinner
+    mode="determinate"
+    [value]="progress"></mat-progress-spinner>
+
+    <p>Time elapsed: {{ seconds }} seconds</p>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="stopTraining()">Stop</button>
+
+
+</section>
