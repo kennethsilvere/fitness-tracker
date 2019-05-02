@@ -22,6 +22,9 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SideNavComponent } from './navigation/side-nav/side-nav.component';
 import { StopTrainingComponent } from './training/current-training/stop-training.component';
 
+// Services
+import { AuthService } from './auth/auth.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +47,7 @@ import { StopTrainingComponent } from './training/current-training/stop-training
     FlexLayoutModule,
     FormsModule
   ],
-  providers: [],
+  providers: [ AuthService ],
   bootstrap: [AppComponent],
   entryComponents: [ StopTrainingComponent ]
 })
