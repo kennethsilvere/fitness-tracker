@@ -24,6 +24,7 @@ import { StopTrainingComponent } from './training/current-training/stop-training
 
 // Services
 import { AuthService } from './auth/auth.service';
+import { TrainingService } from './training/training.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,7 @@ import { AuthService } from './auth/auth.service';
     FlexLayoutModule,
     FormsModule
   ],
-  providers: [ AuthService ],
+  providers: [ AuthService, TrainingService ],
   bootstrap: [AppComponent],
   entryComponents: [ StopTrainingComponent ]
 })
