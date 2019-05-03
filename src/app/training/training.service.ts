@@ -25,7 +25,6 @@ export class TrainingService {
       return ex.id === selectedExerciseId;
     });
     this.exerciseChanged.next(this.currentExercise);
-    console.log(this.currentExercise);
   }
 
   getRunningExercise() {
