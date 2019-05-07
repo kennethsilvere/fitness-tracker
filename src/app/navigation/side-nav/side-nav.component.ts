@@ -33,7 +33,9 @@ export class SideNavComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.authServiceSubscription.unsubscribe();
+    if (this.authServiceSubscription) {
+      this.authServiceSubscription.unsubscribe();
+    }
   }
 
 }

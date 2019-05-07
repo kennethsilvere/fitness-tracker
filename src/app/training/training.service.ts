@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Exercise } from './exercise.model';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -20,7 +21,7 @@ export class TrainingService {
 
   private fbSubscriptions: Subscription[] = [];
 
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private uiService: UIService) {}
 
   fetchAvailableExercises() {
     this.fbSubscriptions.push(this.db.collection('availableExercises').snapshotChanges().pipe(map(docArray => {
@@ -31,10 +32,17 @@ export class TrainingService {
         };
       });
     }))
-    .subscribe((res: Exercise[]) => {
+    .subscribe(
+    (res: any) => {
       this.availableExercises = res;
       this.availableExercisesChanged.next([...res]);
-    }));
+    },
+    () => {
+      this.uiService.showSnackBar('Could not fetch exercises, please try again later', null, 4000);
+      this.uiService.loadingStateChanged.next(false);
+      this.availableExercisesChanged.next(null);
+    }
+  ));
   }
 
   getExercises() {
