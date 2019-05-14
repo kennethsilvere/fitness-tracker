@@ -1,8 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
+import * as fromRoot from '../../app.reducer';
 
 @Component({
   selector: 'app-new-training',
@@ -15,23 +17,23 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   exercises: Exercise[] = null;
 
-  isLoading = true;
+  isLoading$: Observable<boolean>;
 
   availableExercisesChangedSubscription: Subscription;
 
-  constructor(private trainingService: TrainingService) { }
+  constructor(private trainingService: TrainingService,
+              private store: Store<fromRoot.State>) { }
 
   ngOnInit() {
+    this.isLoading$ = this.store.select(fromRoot.getIsLoading);
     this.availableExercisesChangedSubscription = this.trainingService.availableExercisesChanged.subscribe(
       (exercises: Exercise[]) => {
         this.exercises = exercises;
-        this.isLoading = false;
       });
     this.fetchAvailableExercises();
   }
 
   fetchAvailableExercises() {
-    this.isLoading = true;
     this.trainingService.fetchAvailableExercises();
   }
 

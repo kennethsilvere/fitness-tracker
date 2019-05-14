@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subject, Subscription, throwError } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { Exercise } from './exercise.model';
 import { UIService } from '../shared/ui.service';
+import * as fromRoot from '../app.reducer';
+import * as UI from '../shared/ui.actions';
 
 @Injectable()
 export class TrainingService {
@@ -21,9 +24,12 @@ export class TrainingService {
 
   private fbSubscriptions: Subscription[] = [];
 
-  constructor(private db: AngularFirestore, private uiService: UIService) {}
+  constructor(private db: AngularFirestore,
+              private uiService: UIService,
+              private store: Store<fromRoot.State>) {}
 
   fetchAvailableExercises() {
+    this.store.dispatch(new UI.StartLoading());
     this.fbSubscriptions.push(this.db.collection('availableExercises').snapshotChanges().pipe(map(docArray => {
       return docArray.map(doc => {
         return {
@@ -32,17 +38,17 @@ export class TrainingService {
         };
       });
     }))
-    .subscribe(
-    (res: any) => {
-      this.availableExercises = res;
-      this.availableExercisesChanged.next([...res]);
-    },
-    () => {
-      this.uiService.showSnackBar('Could not fetch exercises, please try again later', null, 4000);
-      this.uiService.loadingStateChanged.next(false);
-      this.availableExercisesChanged.next(null);
-    }
-  ));
+    .subscribe((res: any) => {
+        this.availableExercises = res;
+        this.availableExercisesChanged.next([...res]);
+        this.store.dispatch(new UI.StopLoading());
+      },
+      () => {
+        this.uiService.showSnackBar('Could not fetch exercises, please try again later', null, 4000);
+        this.availableExercisesChanged.next(null);
+        this.store.dispatch(new UI.StopLoading());
+      })
+    );
   }
 
   getExercises() {
