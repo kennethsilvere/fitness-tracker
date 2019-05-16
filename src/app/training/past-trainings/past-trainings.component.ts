@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { Store } from '@ngrx/store';
 
 import { TrainingService } from '../training.service';
 import { Exercise } from '../exercise.model';
-import { Subscription } from 'rxjs';
+import * as fromTraining from '../training.reducer';
 
 @Component({
   selector: 'app-past-trainings',
   templateUrl: './past-trainings.component.html',
   styleUrls: ['./past-trainings.component.css']
 })
-export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class PastTrainingsComponent implements OnInit, AfterViewInit {
 
   displayedColumns = ['date', 'name', 'duration', 'calories', 'state'];
 
@@ -19,14 +20,15 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  finishedExercisesChangedSubscription: Subscription;
-
-  constructor(private trainingService: TrainingService) { }
+  constructor(private trainingService: TrainingService, private store: Store<fromTraining.State>) { }
 
   ngOnInit() {
     this.trainingService.fetchFinishedExercises();
-    this.finishedExercisesChangedSubscription
-      = this.trainingService.finishedExercisesChanged.subscribe((data: Exercise[]) => this.dataSource.data = data);
+    this.store.select(fromTraining.getFinishedExercises).subscribe(
+      data => {
+        this.dataSource.data = data;
+      }
+    );
   }
 
   ngAfterViewInit() {
@@ -36,13 +38,6 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy 
 
   filterTable(filterKeyword: string) {
     this.dataSource.filter = filterKeyword.trim().toLowerCase();
-  }
-
-  ngOnDestroy() {
-    if (this.finishedExercisesChangedSubscription) {
-      this.finishedExercisesChangedSubscription.unsubscribe();
-    }
-
   }
 
 }

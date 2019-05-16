@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { Subscription, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AuthService } from '../auth.service';
 import * as fromRoot from '../../app.reducer';
@@ -14,8 +14,6 @@ import * as fromRoot from '../../app.reducer';
 export class LoginComponent implements OnInit {
 
   isLoading$: Observable<boolean>;
-
-  loadingStateSubscription: Subscription;
 
   constructor(private authService: AuthService,
               private store: Store<fromRoot.State>) { }
